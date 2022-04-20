@@ -21,6 +21,7 @@ awp() {
   local aws_profile
   if [[ "$#" -eq 0 ]]; then
     aws_profile=$(aws configure list-profiles | fzf --height 60% --layout=reverse --border)
+  elif [[ "$#" -eq 1 ]]; then
     aws_profile=$(aws configure list-profiles | fzf -q ${1} --select-1 --exit-0 --height 60% --layout=reverse --border)
   fi
   export AWS_PROFILE="${aws_profile}"
