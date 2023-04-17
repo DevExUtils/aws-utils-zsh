@@ -42,3 +42,45 @@ awr() {
   fi
   export AWS_REGION="${aws_region}"
 }
+
+awc() {
+  case ${1} in
+      -a | --all)
+          unset AWS_PROFILE
+          unset AWS_ACCESS_KEY_ID
+          unset AWS_SECRET_ACCESS_KEY
+          unset AWS_SESSION_TOKEN
+          unset AWS_REGION
+          unset AWS_ROLE_ARN
+          unset AWS_ROLE_SESSION_NAME
+          ;;
+      -k | --keys)
+          unset AWS_ACCESS_KEY_ID
+          unset AWS_SECRET_ACCESS_KEY
+          unset AWS_SESSION_TOKEN
+          ;;
+      -p | --profile)
+          unset AWS_PROFILE
+          ;;
+      -re | --region)
+          unset AWS_REGION
+          ;;
+      -ro | --role)
+          unset AWS_ROLE_ARN
+          unset AWS_ROLE_SESSION_NAME
+          ;;
+      *)
+          echo "Select which environment variables to unset:"
+          echo "-k / --keys : AWS_ACCESS_KEY_ID - AWS_SECRET_ACCESS_KEY - AWS_SESSION_TOKEN"
+          echo "-p / --profile : AWS_PROFILE"
+          echo "-re / --region : AWS_REGION"
+          echo "-ro / --role : AWS_ROLE_ARN - AWS_ROLE_SESSION_NAME"
+          echo "-a / --all : Clears all above keys"
+          ;;
+  esac
+}
+
+
+awl() {
+  env | grep AWS_
+}
