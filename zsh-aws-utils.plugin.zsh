@@ -3,47 +3,46 @@
 0="${ZERO:-${${0:#$ZSH_ARGZERO}:-${(%):-%N}}}"
 0="${${(M)0:#/*}:-$PWD/$0}"
 
-# if [ -v "$FZF_DEFAULT_OPTS" ] 
-# then
-# 	fzf_awp_opts=${FZF_DEFAULT_OPTS}
-# else
-# 	fzf_awp_opts="'--height 60%' '--layout=reverse' '--border'"
-# fi
-
-fzf_awp_opts=(
+if [[ -z "$AWS_UTILS_FZF_DEFAULT_OPTS" ]]
+then
+	AWS_UTILS_FZF_DEFAULT_OPTS="
     --ansi
-    --height 60%
-    --layout=reverse
     --border
-)
+    --height='60%'
+    --layout=reverse
+  "
+fi
 
-awp() {
+# 
+set-awsprofile() {
   local aws_profile
+  local opts=$AWS_UTILS_FZF_DEFAULT_OPTS
   if [[ "$#" -eq 0 ]]; then
-    aws_profile=$(aws configure list-profiles | fzf --height 60% --layout=reverse --border)
+    aws_profile=$(aws configure list-profiles |  FZF_DEFAULT_OPTS="$opts" fzf )
   elif [[ "$#" -eq 1 ]]; then
-    aws_profile=$(aws configure list-profiles | fzf -q ${1} --select-1 --exit-0 --height 60% --layout=reverse --border)
+    aws_profile=$(aws configure list-profiles |  FZF_DEFAULT_OPTS="$opts" fzf -q ${1} --select-1 --exit-0)
   fi
   export AWS_PROFILE="${aws_profile}"
 }
 
-awr() {
+set-awsregion() {
   local aws_region
+  local opts=$AWS_UTILS_FZF_DEFAULT_OPTS
   if [[ "$#" -eq 0 ]]; then
     aws_region=$(aws ec2 describe-regions \
                   --all-regions \
                   --query "Regions[].{Name:RegionName}" \
-                  --output text | fzf --height 60% --layout=reverse --border)
+                  --output text | FZF_DEFAULT_OPTS="$opts" fzf)
   elif [[ "$#" -eq 1 ]]; then
     aws_region=$(aws ec2 describe-regions \
                   --all-regions \
                   --query "Regions[].{Name:RegionName}" \
-                  --output text | fzf -q ${1} --select-1 --exit-0 --height 60% --layout=reverse --border)
+                  --output text | FZF_DEFAULT_OPTS="$opts" fzf -q ${1} --select-1 --exit-0)
   fi
   export AWS_REGION="${aws_region}"
 }
 
-awc() {
+remove-awsvariables() {
   case ${1} in
       -a | --all)
           unset AWS_PROFILE
@@ -81,6 +80,13 @@ awc() {
 }
 
 
-awl() {
+list-awsvariables() {
   env | grep AWS_
 }
+
+if [[ -z "$AWS_UTILS_NO_ALIASES" ]]; then
+    alias awp="set-awsprofile"
+    alias awr="set-awsregion"
+    alias awc="remove-awsvariables"
+    alias awl="list-awsvariables"
+fi
