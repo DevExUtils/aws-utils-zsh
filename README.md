@@ -1,4 +1,4 @@
-# ZSH AWP
+# AWS Utilities for ZSH
 
 ZSH AWP (Amazon Web Profile) is a small utility tool which uses the AWS CLI and FZF to quickly switch between your AWS CLI profiles and regions.
 
@@ -28,7 +28,6 @@ Selected profile exported to $env:AWS_PROFILE environment variable
 awp
 ```
 
-
 Pre-sort the profile list with the entered keyword.  
 If multiple profiles matches the keyword, user is prompted to select profile from a list.  
 If only a single match is found that profile is directly selected without further user prompts.  
@@ -37,8 +36,6 @@ Selected profile exported to $env:AWS_PROFILE environment variable.
 ```sh
 awp myprofile
 ```
-
-
 
 [fzf]: https://github.com/junegunn/fzf
 [AWSCLI]: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
